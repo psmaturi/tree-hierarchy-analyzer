@@ -7,12 +7,17 @@ app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 
-// USER METADATA (UPDATE YOUR DETAILS)
+// USER METADATA
 const METADATA = {
     user_id: "john_doe_24042026",
     email_id: "john.doe@college.edu",
     college_roll_number: "2021CS101"
 };
+
+// 🔹 DEBUG ROUTE (IMPORTANT)
+app.get("/", (req, res) => {
+    res.send("API is working");
+});
 
 const processGraph = (data) => {
     const invalid_entries = [];
@@ -112,11 +117,10 @@ const processGraph = (data) => {
         return 1 + max;
     };
 
-    // STEP 6: Process each component
+    // STEP 6: Process components
     components.forEach(comp => {
         const compRoots = Array.from(comp).filter(n => !parentOf[n]);
 
-        // Choose root
         const root = compRoots.length
             ? compRoots[0]
             : Array.from(comp).sort()[0];
@@ -163,9 +167,11 @@ const processGraph = (data) => {
     };
 };
 
-// API Route
+// 🔹 API ROUTE WITH LOGGING
 app.post('/bfhl', (req, res) => {
     try {
+        console.log("Incoming request:", req.body);
+
         const { data } = req.body;
 
         if (!data || !Array.isArray(data)) {
@@ -176,11 +182,12 @@ app.post('/bfhl', (req, res) => {
         res.json(result);
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
 
-// Start server
+// START SERVER
 app.listen(PORT, () => {
     console.log(`API running on port ${PORT}`);
 });
